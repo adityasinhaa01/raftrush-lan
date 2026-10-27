@@ -1,0 +1,58 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Unity YAML files (scenes, prefabs, assets, materials, animations)
+*.unity text merge=unityyamlmerge eol=lf
+*.prefab text merge=unityyamlmerge eol=lf
+*.asset text merge=unityyamlmerge eol=lf
+*.mat text merge=unityyamlmerge eol=lf
+*.anim text merge=unityyamlmerge eol=lf
+*.controller text merge=unityyamlmerge eol=lf
+*.overrideController text merge=unityyamlmerge eol=lf
+*.physicMaterial text merge=unityyamlmerge eol=lf
+*.physicsMaterial2D text merge=unityyamlmerge eol=lf
+*.guiskin text merge=unityyamlmerge eol=lf
+*.meta text eol=lf
+
+# C# and Shader files
+*.cs text diff=csharp eol=lf
+*.cginc text eol=lf
+*.shader text eol=lf
+*.compute text eol=lf
+*.hlsl text eol=lf
+*.glsl text eol=lf
+
+# Data and config files
+*.json text eol=lf
+*.xml text eol=lf
+*.txt text eol=lf
+*.md text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Binary asset formats
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.tga binary
+*.psd binary
+*.exr binary
+*.hdr binary
+*.tif binary
+*.tiff binary
+*.fbx binary
+*.obj binary
+*.dae binary
+*.blend binary
+*.3ds binary
+*.max binary
+*.wav binary
+*.mp3 binary
+*.ogg binary
+*.aif binary
+*.aiff binary
+*.ttf binary
+*.otf binary
+*.dll binary
+*.so binary
+*.dylib binary

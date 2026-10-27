@@ -1,0 +1,138 @@
+{
+  "DefaultLanguage": "en",
+  "Languages": [
+    {
+      "Code": "en",
+      "Name": "English",
+      "NativeName": "English",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "tr",
+      "Name": "Turkish",
+      "NativeName": "Türkçe",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "de",
+      "Name": "German",
+      "NativeName": "Deutsch",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "fr",
+      "Name": "French",
+      "NativeName": "Français",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "it",
+      "Name": "Italian",
+      "NativeName": "Italiano",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "es",
+      "Name": "Spanish",
+      "NativeName": "Español",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "pt-BR",
+      "Name": "Portuguese (Brazil)",
+      "NativeName": "Português (Brasil)",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "pl",
+      "Name": "Polish",
+      "NativeName": "Polski",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "nl",
+      "Name": "Dutch",
+      "NativeName": "Nederlands",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "id",
+      "Name": "Indonesian",
+      "NativeName": "Bahasa Indonesia",
+      "RightToLeft": false,
+      "Fonts": null
+    },
+    {
+      "Code": "ru",
+      "Name": "Russian",
+      "NativeName": "Русский",
+      "RightToLeft": false,
+      "Fonts": {
+        "": "GamesMrkt/Localization/Fonts/MPLUSRounded/m_plus_rounded_gamesmrkt_default"
+      }
+    },
+    {
+      "Code": "vi",
+      "Name": "Vietnamese",
+      "NativeName": "Tiếng Việt",
+      "RightToLeft": false,
+      "Fonts": {
+        "": "GamesMrkt/Localization/Fonts/MPLUSRounded/m_plus_rounded_gamesmrkt_default"
+      }
+    },
+    {
+      "Code": "ja",
+      "Name": "Japanese",
+      "NativeName": "日本語",
+      "RightToLeft": false,
+      "Fonts": {
+        "": "GamesMrkt/Localization/Fonts/MPLUSRounded/m_plus_rounded_gamesmrkt_default"
+      }
+    },
+    {
+      "Code": "ko",
+      "Name": "Korean",
+      "NativeName": "한국어",
+      "RightToLeft": false,
+      "Fonts": {
+        "": "GamesMrkt/Localization/Fonts/Jua/jua_gamesmrkt_default"
+      }
+    },
+    {
+      "Code": "zh-CN",
+      "Name": "Chinese (Simplified)",
+      "NativeName": "简体中文",
+      "RightToLeft": false,
+      "Fonts": {
+        "": "GamesMrkt/Localization/Fonts/NotoSans/noto_sons_gamesmrkt_default"
+      }
+    },
+    {
+      "Code": "ar",
+      "Name": "Arabic",
+      "NativeName": "العربية",
+      "RightToLeft": true,
+      "Fonts": {
+        "": "GamesMrkt/Localization/Fonts/Vazirmatn/vazirmatn_gamesmrkt_default"
+      }
+    },
+    {
+      "Code": "fa",
+      "Name": "Persian",
+      "NativeName": "فارسی",
+      "RightToLeft": true,
+      "Fonts": {
+        "": "GamesMrkt/Localization/Fonts/Vazirmatn/vazirmatn_gamesmrkt_default"
+      }
+    }
+  ]
+}

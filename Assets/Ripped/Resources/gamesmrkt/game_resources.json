@@ -1,0 +1,126 @@
+{
+  "ActiveEnvironment": "Local",
+  "Globals": [
+    {
+      "Key": "tos_link",
+      "Type": "String",
+      "Value": "https://www.gamesmrkt.com/terms-of-service.html"
+    },
+    {
+      "Key": "pp_link",
+      "Type": "String",
+      "Value": "https://www.gamesmrkt.com/privacy-policy/"
+    },
+    {
+      "Key": "survey_url",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSc-3RGDcOksCs_6a1Q5QE_ZPkbUmGb4B1MEfpbyYSxnmA-dRQ/viewform?usp=pp_url&entry.1470031274="
+    },
+    {
+      "Key": "survey_url_en",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSc-3RGDcOksCs_6a1Q5QE_ZPkbUmGb4B1MEfpbyYSxnmA-dRQ/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=en"
+    },
+    {
+      "Key": "survey_url_tr",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSeRwRKnXpe0LhOJh48Vhu_SZAX6WcVSq0h6lSdBQo4_ep3GCA/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=tr"
+    },
+    {
+      "Key": "survey_url_ar",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSeXie5VIBXOvX82l0fT4shLYOsEuCPHc_T4z_ib0uUeB5NAlw/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=ar"
+    },
+    {
+      "Key": "survey_url_fa",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSczNz3GXKVersWL5BP3TFYAfDvDhG0KgdaWfi2IIT1FFzlhYg/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=fa"
+    },
+    {
+      "Key": "survey_url_nl",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSd7q3LeO6iWKRXslwM25Y2Wnb_DpxQgPiQsn7Cd-WfvuN9dkg/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=nl"
+    },
+    {
+      "Key": "survey_url_ru",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSd_-lWFOFtsXx1VhvPSVSysVW3F43X9U0kcRLbi0HwF4lHg9g/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=ru"
+    },
+    {
+      "Key": "survey_url_zh-cn",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSdcKaU3bd0u7SRqq2iGTOGthXjV48j0o1SL8ZnTGNLQCSZzKA/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=zh-CN"
+    },
+    {
+      "Key": "survey_url_ja",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLScG1YcGuAuK7RJPNZiotVPfSk6z9eiaRqyFeZsC6iM6RxA98w/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=ja"
+    },
+    {
+      "Key": "survey_url_ko",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSeRH2Pa_ZbZ_JXADhGVed76c6V6mSCUellSfKdZnDq8MS6yHQ/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=ko"
+    },
+    {
+      "Key": "survey_url_hi",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLScN-y4ILL7EA2azUT7DwEmKsuldxEcz3Ccu2VFupMiFuwxpeQ/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=hi"
+    },
+    {
+      "Key": "survey_url_id",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSdJo5PrpEzYIcfJ1veX3zMcg4L7n3fXeB98CL8zCQcdQO2-KA/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=id"
+    },
+    {
+      "Key": "survey_url_pl",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSfq3zA30Ea0mPAv4GaR9nUclbgvQrT12WGs4Cdbn8oQTZrQ7Q/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=pl"
+    },
+    {
+      "Key": "survey_url_de",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSd4CrNAD7Ssv6KHDZOKa_iiclYH7sIaRqzsWNxtJqTv2yio2g/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=de"
+    },
+    {
+      "Key": "survey_url_fr",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSfirB6_cb6TaruCZIH92GMz_Dc7hR_i2dcM9LR8DFL3iqBMng/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=fr"
+    },
+    {
+      "Key": "survey_url_it",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSfGdQBCiFEKwg0IlfdjxCFNmnpROGg5BrRnNjrFj900M0_gvA/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=it"
+    },
+    {
+      "Key": "survey_url_es-es",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSdQqKCjf3x7AG7weA4EuBKbDg_JaLQ-GibYVPmh3Cw4vN4YMg/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=es"
+    },
+    {
+      "Key": "survey_url_pt-br",
+      "Type": "String",
+      "Value": "https://docs.google.com/forms/d/e/1FAIpQLSfqoJSkg20_K8ErkN0krMybpIcAaZblzTwGIrlzcmtBiSe4Lw/viewform?usp=pp_url&entry.1470031274=__SESSION_DATA__&hl=pt-BR"
+    },
+    {
+      "Key": "build_number",
+      "Type": "Int",
+      "Value": "86"
+    },
+    {
+      "Key": "dc_link",
+      "Type": "String",
+      "Value": "https://gamesmrkt.com/community"
+    },
+    {
+      "Key": "bug_report_mail",
+      "Type": "String",
+      "Value": "contact@gamesmrkt.com"
+    }
+  ],
+  "Environments": [
+    {
+      "Name": "Local",
+      "Entries": []
+    }
+  ]
+}

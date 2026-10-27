@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 9b58e177b7b1ede4783919db4d8cc9ba
+timeCreated: 1792834205
+licenseType: Free
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures:
+  - _ParallaxMapping_ca6a44575e7e4a939c2f1426afff27a2_Heightmap_1_Texture2D: {fileID: 0}
+  userData:
+  assetBundleName:
+  assetBundleVariant:

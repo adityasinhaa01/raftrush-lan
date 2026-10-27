@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Water
+  m_Shader: {fileID: 4800000, guid: 9b58e177b7b1ede4783919db4d8cc9ba, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ENABLEWAVE
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+      _Ds_text:
+        m_Texture: {fileID: 2800000, guid: 403153350176c984ba1f932519e670af, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _ParallaxMapping_ca6a44575e7e4a939c2f1426afff27a2_Heightmap_1_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _RippleRT:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _Surface_distortion_map:
+        m_Texture: {fileID: 2800000, guid: 36d04471b28fc9f408550af36c3ba3b0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _Surfoam_map:
+        m_Texture: {fileID: 2800000, guid: d4d24ae9c3783eb448857fd41c81c663, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _WaterDepthTexture:
+        m_Texture: {fileID: 2800000, guid: 3f196959f70964640bec13f19399447f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _caustic_distoriton_map:
+        m_Texture: {fileID: 2800000, guid: 403153350176c984ba1f932519e670af, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _caustic_map:
+        m_Texture: {fileID: 2800000, guid: 73ecbdc98fab3284b81de1d7a0d4c024, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: {}
+    m_Floats:
+      _BasedOnWorldScale: 0
+      _Ds_str: 1.36
+      _Ds_tiling: 3
+      _ENABLECAUSTICS: 0
+      _ENABLEWAVE: 1
+      _Emission: 1
+      _FoamAmount: 0.18
+      _FoamShoreSpeed: 0.015
+      _FoamSpeed: 0.004
+      _Intensity: 100
+      _QueueControl: 0
+      _QueueOffset: 0
+      _Rip_Softness: 0.05
+      _Rip_Strenght: -0.29
+      _Rip_cut_off: 0.82
+      _Rip_orto_size: 2.3
+      _Scale: 105.9
+      _ShoreFoamAmount: 0.199
+      _ShoreFoamSpeed: 0.0005
+      _ShoreFoamTreshhold: 0.62
+      _Surface_distortion_map_Scale: 1.78
+      _Surfoam_Scale: 78.11
+      _Surfoam_distortion_strenge: -0.15
+      _Surfoam_edge: 0.593
+      _Surfoam_edge_smooth: 0
+      _Test: 1
+      _Transparency: 2.32
+      _Treshhold: 0.53
+      _WaterFoamAmount: 0.162
+      _WaterFoamSpeed: 0.01
+      _WaveIntensity: 0
+      _WavesSpeed: 83.5
+      _caausticstrenght: 0.4
+      _causticdistortion_scale: 0
+      _causticdistortion_strenge: 0.2
+      _causticpab: 0.51
+      _causticscale: -0.71
+      _deepth_distance: 1.2
+      _normal_strenge: 0.26
+    m_Colors:
+      _Deepht_color: {r: 0.7798742, g: 0.7798742, b: 0.7798742, a: 1}
+      _Ds_speed: {r: 0.003, g: 0.003, b: 0, a: 0}
+      _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+      _Rip_center: {r: 3.76, g: 0, b: 0, a: 0}
+      _RippleCenter: {r: 0, g: 0, b: 0, a: 0}
+      _RippleWorldSize: {r: 0, g: 0, b: 0, a: 0}
+      _ShoreFoamColor: {r: 1, g: 1, b: 1, a: 1}
+      _Surface_distortion_pan: {r: 1, g: 1, b: 0, a: 0}
+      _Surfacefoam_color: {r: 0.34117648, g: 0.6159518, b: 0.8039216, a: 1}
+      _Surfoam_Smooth: {r: 1, g: 1, b: 0, a: 0}
+      _Surfoam_pan: {r: 0.1, g: 0.1, b: 0, a: 0}
+      _WaterBrightColor: {r: 0.086274505, g: 0.5694117, b: 0.7764706, a: 1}
+      _WaterDarkColor: {r: 0.08235296, g: 0.6094117, b: 0.8352941, a: 1}
+      _WaterDeepColor: {r: 0.26274508, g: 0.38370466, b: 0.98039216, a: 0.8235294}
+      _WaterFoamColor: {r: 0.26300368, g: 0.62818056, b: 0.76729554, a: 1}
+      _WaterNearColor: {r: 0, g: 0.78226805, b: 1, a: 0.78039217}
+      _WaterShoreColor: {r: 1, g: 0.9292453, b: 0.9292453, a: 1}
+      _caustic_color: {r: 0, g: 0.40597138, b: 0.41509432, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 0
