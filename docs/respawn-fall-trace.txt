@@ -1,0 +1,31 @@
+================================================================================
+RESPAWN FALL TRACE AT CHECKPOINT 1 (-30.23, 1.51, -10.80)
+================================================================================
+CP1 transform found: True
+CP1 world pos: (-30.23, 0.01, -10.80), rot: (0.00, 0.00, 0.00)
+Initial Respawn State: pos=(-30.23, 1.51, -10.80), rot=(0.00, 0.00, 0.00), vel=(0.00, 0.00, 0.00)
+t=0.12s | pos=(-30.23, 1.43, -10.80) | vel=(0.00, -1.11, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.57), ~SurfaceProbe(y=0.55)]
+t=0.24s | pos=(-30.23, 1.23, -10.80) | vel=(0.00, -2.10, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.37), ~SurfaceProbe(y=0.55)]
+t=0.36s | pos=(-30.23, 1.05, -10.80) | vel=(0.00, -1.05, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.19), ~SurfaceProbe(y=0.55)]
+t=0.48s | pos=(-30.23, 0.98, -10.80) | vel=(0.00, -0.31, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.12), ~SurfaceProbe(y=0.55)]
+t=0.60s | pos=(-30.23, 0.97, -10.80) | vel=(0.00, 0.05, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.11), ~SurfaceProbe(y=0.55)]
+t=0.72s | pos=(-30.23, 0.99, -10.80) | vel=(0.00, 0.15, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.13), ~SurfaceProbe(y=0.55)]
+t=0.84s | pos=(-30.23, 1.00, -10.80) | vel=(0.00, 0.13, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.15), ~SurfaceProbe(y=0.55)]
+t=0.96s | pos=(-30.23, 1.01, -10.80) | vel=(0.00, 0.07, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=1.08s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.03, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=1.20s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=1.32s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, -0.01, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=1.44s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, -0.01, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=1.56s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=1.68s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=1.80s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=1.92s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=2.04s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=2.16s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=2.28s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=2.40s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=2.52s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=2.64s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=2.76s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=2.88s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]
+t=3.00s | pos=(-30.23, 1.02, -10.80) | vel=(0.00, 0.00, 0.00) | hits=[GM_3D_BoatMain_Col(y=1.16), ~SurfaceProbe(y=0.55)]

@@ -31,6 +31,21 @@ namespace FartTogether.CameraRig
 
         private Vector3 _currentVelocity;
 
+        public static ChaseCamera Instance { get; private set; }
+
+        private void Awake()
+        {
+            Instance = this;
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+        }
+
         public Transform Target
         {
             get => _target;
@@ -118,6 +133,8 @@ namespace FartTogether.CameraRig
             {
                 transform.rotation = Quaternion.LookRotation(lookDir, Vector3.up);
             }
+
+            _currentVelocity = Vector3.zero;
         }
     }
 }

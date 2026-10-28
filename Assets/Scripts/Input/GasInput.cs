@@ -126,6 +126,25 @@ namespace FartTogether.PlayerInput
             }
         }
 
+        /// <summary>
+        /// Resets all seats and gas fuel following respawn (matching NetworkBoat.cs lines 1255 & 1294: ResetCrewGas).
+        /// </summary>
+        public void ResetCrewGas()
+        {
+            if (_seats == null) return;
+            for (int i = 0; i < _seats.Length; i++)
+            {
+                if (_seats[i] != null)
+                {
+                    _seats[i].isHeld = false;
+                    _seats[i].holdTimer = 0f;
+                    _seats[i].isDepleted = false;
+                    _seats[i].currentFuel = _maxGas;
+                    _seats[i].regenDelayTimer = 0f;
+                }
+            }
+        }
+
         private bool CheckKeyPressed(int index)
         {
 #if ENABLE_INPUT_SYSTEM

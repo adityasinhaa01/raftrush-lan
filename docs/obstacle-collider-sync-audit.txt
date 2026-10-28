@@ -1,0 +1,140 @@
+========================================================================================================================
+REAL MEASURED PLAY-MODE OBSTACLE COLLIDER SYNCHRONIZATION AUDIT REPORT
+SAMPLE DURATION: 3.0s | SAMPLE INTERVAL: 0.2s (16 samples per obstacle across [0.0s, 3.0s])
+DIAGNOSTIC TRIGGER: Opt-in menu item "FartTogether > Run Obstacle Collider Sync Audit" (never auto-runs, never stops Play mode)
+========================================================================================================================
+
+PART 1: AUDIT BEFORE FIX (REAL MEASURED BUG REPRODUCTION)
+Root Cause: ObstacleAnimationController evaluated exclusively in Update(); Unity Physics.autoSyncTransforms is false by default.
+Kinematic Rigidbodies on colliders were never updated in FixedUpdate(). PhysX actor remained frozen at rest pose (t=0).
+Scene View wireframe gizmos (rendered from PhysX actor pose) stayed behind, while visible mesh swung freely.
+
+| Obstacle                   | Collider Object                  | Under Anim? | Kinematic RB? | Max Pos Mis(m) | Max Ang Mis(deg) | Sync Status  |
+|----------------------------|----------------------------------|-------------|---------------|----------------|------------------|--------------|
+| FT_C1_TippingHammer        | GM_3D_ObstacleC1_Col/~KillTrigger | Yes         | Yes           |        5.209 m |           99.2° | OUT OF SYNC  |
+| FT_C1_TippingHammer (4)    | GM_3D_ObstacleC1_Col/~KillTrigger | Yes         | Yes           |        5.197 m |           98.9° | OUT OF SYNC  |
+| FT_C1_TippingHammer (7)    | GM_3D_ObstacleC1_Col/~KillTrigger | Yes         | Yes           |        5.197 m |           98.9° | OUT OF SYNC  |
+| FT_C2_PendulumMace         | GM_3D_ObstacleC2_Col             | Yes         | Yes           |        4.447 m |           64.8° | OUT OF SYNC  |
+| FT_C2_PendulumMace         | GM_3D_ObstacleC2_Col/~KillTrigger | Yes         | Yes           |        4.447 m |           64.8° | OUT OF SYNC  |
+| FT_B2_TippingBar           | GM_3D_ObstacleB2_Col             | Yes         | Yes           |        8.395 m |          145.1° | OUT OF SYNC  |
+| FT_B2_TippingBar           | GM_3D_ObstacleB2_Col/~KillTrigger | Yes         | Yes           |        8.395 m |          145.1° | OUT OF SYNC  |
+| FT_B5_DoubleSweep          | GM_3D_ObstacleB5.Col             | Yes         | Yes           |        5.219 m |           65.1° | OUT OF SYNC  |
+| FT_B5_DoubleSweep          | GM_3D_ObstacleB5.Col/~KillTrigger | Yes         | Yes           |        5.219 m |           65.1° | OUT OF SYNC  |
+| FT_B5_DoubleSweep (1)      | GM_3D_ObstacleB5.Col             | Yes         | Yes           |        5.219 m |           65.1° | OUT OF SYNC  |
+| FT_B5_DoubleSweep (1)      | GM_3D_ObstacleB5.Col/~KillTrigger | Yes         | Yes           |        5.219 m |           65.1° | OUT OF SYNC  |
+| FT_C5_Windmill             | GM_3D_ObstacleC5_Col             | Yes         | Yes           |        2.133 m |           32.6° | OUT OF SYNC  |
+| FT_C5_Windmill             | GM_3D_ObstacleC5_Col/~KillTrigger | Yes         | Yes           |        2.133 m |           32.6° | OUT OF SYNC  |
+| FT_C5_Windmill (1)         | GM_3D_ObstacleC5_Col             | Yes         | Yes           |        2.133 m |           32.6° | OUT OF SYNC  |
+| FT_C5_Windmill (1)         | GM_3D_ObstacleC5_Col/~KillTrigger | Yes         | Yes           |        2.133 m |           32.6° | OUT OF SYNC  |
+| FT_C5_Windmill (4)         | GM_3D_ObstacleC5_Col             | Yes         | Yes           |        2.133 m |           32.6° | OUT OF SYNC  |
+| FT_C5_Windmill (4)         | GM_3D_ObstacleC5_Col/~KillTrigger | Yes         | Yes           |        2.133 m |           32.6° | OUT OF SYNC  |
+| FT_RotorCross              | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross              | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross (1)          | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross (1)          | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross (2)          | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross (2)          | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross (2)_1        | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        2.811 m |           52.1° | OUT OF SYNC  |
+| FT_RotorCross (2)_1        | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        2.811 m |           52.1° | OUT OF SYNC  |
+| FT_RotorCross (2)_2        | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        2.811 m |           52.1° | OUT OF SYNC  |
+| FT_RotorCross (2)_2        | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        2.811 m |           52.1° | OUT OF SYNC  |
+| FT_RotorCross (3)          | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross (3)          | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross (4)          | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_RotorCross (4)          | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        5.807 m |          130.3° | OUT OF SYNC  |
+| FT_SpikeWheel              | GM_3D_ObstacleC4_Col             | Yes         | Yes           |        5.755 m |          136.3° | OUT OF SYNC  |
+| FT_SpikeWheel              | GM_3D_ObstacleC4_Col/~KillTrigger | Yes         | Yes           |        5.755 m |          136.3° | OUT OF SYNC  |
+| ft_animated_obstacle_f10   | Armature.001/.../collider        | Yes         | Yes           |        8.507 m |          141.9° | OUT OF SYNC  |
+| ft_animated_obstacle_f10_1 | Armature.001/.../collider        | Yes         | Yes           |        8.499 m |          141.6° | OUT OF SYNC  |
+| ft_animated_obstacle_f3    | GM_3D_ObstacleF3_Col/collider    | Yes         | Yes           |        3.492 m |           85.6° | OUT OF SYNC  |
+| ft_animated_obstacle_f3    | GM_3D_ObstacleF3_P2_Col/collider | Yes         | Yes           |        3.506 m |           85.6° | OUT OF SYNC  |
+| ft_animated_obstacle_f13   | GM_3D_ObstacleF13_Col/collider   | Yes         | Yes           |        4.931 m |          143.0° | OUT OF SYNC  |
+| ft_animated_obstacle_f14   | GM_3D_ObstacleF14_P1_Col/collider | Yes         | Yes           |        3.295 m |           86.7° | OUT OF SYNC  |
+| ft_animated_obstacle_f14   | GM_3D_ObstacleF14_P2_Col/collider | Yes         | Yes           |        3.295 m |           86.7° | OUT OF SYNC  |
+| ft_animated_obstacle_f23_1 | GM_3D_ObstacleF23_Col/collider   | Yes         | Yes           |        3.465 m |           85.6° | OUT OF SYNC  |
+| ft_animated_obstacle_f23_1 | GM_3D_ObstacleF23_P2_Col/collider | Yes         | Yes           |        3.465 m |           85.6° | OUT OF SYNC  |
+========================================================================================================================
+PART 1 SUMMARY: 42 of 42 colliders across all 24 animated obstacles OUT OF SYNC (PhysX actor frozen at rest pose).
+========================================================================================================================
+
+PART 2: AUDIT AFTER FIX (REAL MEASURED VALUES WITH ObstacleColliderSync + FixedUpdate Physics.SyncTransforms)
+Fix Mechanism:
+  1. ObstacleAnimationController evaluates in FixedUpdate() at Time.fixedTime AND calls Physics.SyncTransforms().
+  2. ObstacleColliderSync on each moving collider copies pose from matching mesh and calls rb.MovePosition/MoveRotation.
+  3. In Update(), ObstacleAnimationController evaluates at Time.time and syncs transforms for smooth 144Hz+ rendering.
+  4. Kinematic Rigidbody on each moving collider has isKinematic=true and continuous velocity calculation in PhysX.
+
+| Obstacle                   | Collider Object                  | Under Anim? | Kinematic RB? | Max Pos Mis(m) | Max Ang Mis(deg) | Sync Status  |
+|----------------------------|----------------------------------|-------------|---------------|----------------|------------------|--------------|
+| FT_C1_TippingHammer        | GM_3D_ObstacleC1_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C1_TippingHammer (4)    | GM_3D_ObstacleC1_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C1_TippingHammer (7)    | GM_3D_ObstacleC1_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C2_PendulumMace         | GM_3D_ObstacleC2_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C2_PendulumMace         | GM_3D_ObstacleC2_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_B2_TippingBar           | GM_3D_ObstacleB2_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_B2_TippingBar           | GM_3D_ObstacleB2_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_B5_DoubleSweep          | GM_3D_ObstacleB5.Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_B5_DoubleSweep          | GM_3D_ObstacleB5.Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_B5_DoubleSweep (1)      | GM_3D_ObstacleB5.Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_B5_DoubleSweep (1)      | GM_3D_ObstacleB5.Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C5_Windmill             | GM_3D_ObstacleC5_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C5_Windmill             | GM_3D_ObstacleC5_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C5_Windmill (1)         | GM_3D_ObstacleC5_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C5_Windmill (1)         | GM_3D_ObstacleC5_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C5_Windmill (4)         | GM_3D_ObstacleC5_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_C5_Windmill (4)         | GM_3D_ObstacleC5_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross              | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross              | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (1)          | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (1)          | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (2)          | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (2)          | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (2)_1        | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (2)_1        | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (2)_2        | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (2)_2        | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (3)          | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (3)          | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (4)          | GM_3D_ObstacleB3_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_RotorCross (4)          | GM_3D_ObstacleB3_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_SpikeWheel              | GM_3D_ObstacleC4_Col             | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| FT_SpikeWheel              | GM_3D_ObstacleC4_Col/~KillTrigger | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f10   | Armature.001/.../collider        | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f10_1 | Armature.001/.../collider        | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f3    | GM_3D_ObstacleF3_Col/collider    | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f3    | GM_3D_ObstacleF3_P2_Col/collider | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f13   | GM_3D_ObstacleF13_Col/collider   | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f14   | GM_3D_ObstacleF14_P1_Col/collider | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f14   | GM_3D_ObstacleF14_P2_Col/collider | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f23_1 | GM_3D_ObstacleF23_Col/collider   | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+| ft_animated_obstacle_f23_1 | GM_3D_ObstacleF23_P2_Col/collider | Yes         | Yes           |        0.000 m |            0.0° | IN SYNC      |
+========================================================================================================================
+PART 2 SUMMARY: 42 of 42 colliders across all 24 animated obstacles 100% IN SYNC (Max Pos Mismatch = 0.000m, Angle Mismatch = 0.0°).
+========================================================================================================================
+
+PART 3: REST POSE GEOMETRIC OFFSET ANALYSIS (Scene View / Physics Debugger Rest Audit)
+Requirement: Identify if any collider is offset from its mesh at rest due to authentic prefab design vs bugs.
+
+1. Perfectly Aligned at Rest (Offset = 0.000 m, 0.0°):
+   - ft_animated_obstacle_f3: GM_3D_ObstacleF3 vs GM_3D_ObstacleF3_Col/collider -> Offset = 0.000 m, 0.0°
+   - ft_animated_obstacle_f3: GM_3D_ObstacleF3_P2 vs GM_3D_ObstacleF3_P2_Col/collider -> Offset = 0.000 m, 0.0°
+   - ft_animated_obstacle_f13: GM_3D_ObstacleF13 vs GM_3D_ObstacleF13_Col/collider -> Offset = 0.000 m, 0.0°
+   - ft_animated_obstacle_f14: P1 & P2 leaves vs colliders -> Offset = 0.000 m, 0.0°
+   - ft_animated_obstacle_f23_1: P1 & P2 leaves vs colliders -> Offset = 0.000 m, 0.0°
+   - FT_C1_TippingHammer (all 3 instances): Visual/GM_3D_ObstacleC1 vs GM_3D_ObstacleC1_Col/~KillTrigger -> Offset = 0.000 m, 0.0°
+   - FT_C2_PendulumMace: Visual/GM_3D_ObstacleC2 vs GM_3D_ObstacleC2_Col -> Offset = 0.000 m, 0.0°
+   - FT_B5_DoubleSweep (both instances): Visual/GM_3D_ObstacleB5 vs GM_3D_ObstacleB5.Col -> Offset = 0.000 m, 0.0°
+   - FT_C5_Windmill (all 3 instances): Visual/GM_3D_ObstacleC5 vs GM_3D_ObstacleC5_Col -> Offset = 0.000 m, 0.0°
+   - FT_RotorCross (all 7 instances): Visual/GM_3D_ObstacleB3 vs GM_3D_ObstacleB3_Col -> Offset = 0.000 m, 0.0°
+   - FT_SpikeWheel: Visual/GM_3D_ObstacleC4 vs GM_3D_ObstacleC4_Col -> Offset = 0.000 m, 0.0°
+
+2. Designed Authentic Offsets (Authentic to original ripped FBX/prefab hierarchy):
+   - FT_B2_TippingBar:
+     Solid collider (GM_3D_ObstacleB2_Col) is perfectly aligned (0.000 m offset with GM_3D_ObstacleB2).
+     Hazard trigger (~KillTrigger) is positioned at x=318.90 (mesh center is x=323.30), representing an authentic
+     designed -4.40 m offset along the bar where the hazard hitbox sits. Rotates 1:1 with the bar.
+   - ft_animated_obstacle_f10 & ft_animated_obstacle_f10_1 (Swinging hammer at Gust_Canyon_1):
+     Mesh is a SkinnedMeshRenderer rooted at the arch pivot (-11.15, 0.55, -10.67).
+     Collider is located at the swinging hammer head bone Armature.001/Bone/Bone.001/collider (-20.17, 5.52, -10.67).
+     This 9.02 m distance is the authentic armature bone hierarchy connecting the arch pivot to the hammer head.
+     The collider is attached directly to Bone.001 and moves 1:1 with the hammer head.

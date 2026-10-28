@@ -105,6 +105,13 @@ namespace FartTogether.Raft
             _rb.centerOfMass = new Vector3(0f, _centerOfMassY, 0f);
             _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             _rb.interpolation = RigidbodyInterpolation.Interpolate;
+
+            // Never allow raft to sleep so trigger volumes (WaterFlowZone, Checkpoints, VoidKill) stay active
+            _rb.sleepThreshold = 0f;
+
+            // Robust collision solving to prevent tunneling through single-sided track meshes under gas propulsion
+            _rb.solverIterations = 16;
+            _rb.solverVelocityIterations = 8;
         }
 
         private void ResolveInputSource()

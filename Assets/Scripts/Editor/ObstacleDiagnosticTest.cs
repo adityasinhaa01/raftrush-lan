@@ -21,14 +21,7 @@ namespace FartTogether.Editor
     /// </summary>
     public static class ObstacleDiagnosticTest
     {
-        [InitializeOnLoadMethod]
-        private static void AutoRunOnCompile()
-        {
-            EditorApplication.delayCall += () =>
-            {
-                RunConcreteTest();
-            };
-        }
+
 
         [MenuItem("FartTogether/Run Gate Rotation Concrete Test", priority = 4)]
         public static void RunTestMenu()
@@ -47,55 +40,86 @@ namespace FartTogether.Editor
                 }
             }
 
-            GameObject gate = GameObject.Find("ft_animated_obstacle_f3");
-            if (gate == null)
+            string[] targetObstacleNames = new string[]
             {
-                Debug.LogError("[ObstacleDiagnosticTest] 'ft_animated_obstacle_f3' not found in scene.");
-                return "Error: ft_animated_obstacle_f3 not found.";
-            }
-
-            ObstacleAnimationController ctrl = gate.GetComponent<ObstacleAnimationController>();
-            if (ctrl == null || ctrl.Clip == null)
-            {
-                Debug.LogError("[ObstacleDiagnosticTest] ObstacleAnimationController or Clip is null on ft_animated_obstacle_f3.");
-                return "Error: ObstacleAnimationController or Clip is null.";
-            }
-
-            AnimationClip clip = ctrl.Clip;
-            GameObject root = ctrl.AnimationRoot != null ? ctrl.AnimationRoot : gate;
+                "ft_animated_obstacle_f10",
+                "ft_animated_obstacle_f10_1",
+                "ft_animated_obstacle_f13",
+                "ft_animated_obstacle_f14",
+                "ft_animated_obstacle_f23_1"
+            };
 
             var sb = new StringBuilder();
             sb.AppendLine("================================================================================");
-            sb.AppendLine("CONCRETE TEST LOG: ft_animated_obstacle_f3 ROTATION SAMPLES (EVERY 0.1s OVER 3s)");
-            sb.AppendLine($"Gate Object: {gate.name}");
-            sb.AppendLine($"Animation Root: {root.name} ({AssetDatabase.GetAssetPath(clip)})");
-            sb.AppendLine($"Clip Name: {clip.name}");
-            sb.AppendLine($"Clip Length: {clip.length:F3}s");
-            sb.AppendLine($"Clip Legacy Flag: {clip.legacy}");
-            sb.AppendLine($"Playback Speed: {ctrl.PlaybackSpeed}x");
-            sb.AppendLine($"Phase Seconds: {ctrl.PhaseSeconds}s");
+            sb.AppendLine("CONCRETE VERIFICATION: 5 OBSTACLE ROTATION/MOTION SAMPLES OVER 3 SECONDS (EVERY 0.1s)");
             sb.AppendLine("================================================================================");
-            sb.AppendLine(string.Format("{0,-8} | {1,-12} | {2,-16} | {3,-28} | {4,-28}", 
-                "Time(s)", "NormTime", "SampleTime(s)", "SampleAnimation Root Euler", "Child GM_3D_ObstacleF3 Euler"));
-            sb.AppendLine(new string('-', 100));
 
-            Transform visualChild = root.transform.Find("GM_3D_ObstacleF3") ?? root.transform;
-
-            for (float t = 0.0f; t <= 3.05f; t += 0.1f)
+            foreach (string obsName in targetObstacleNames)
             {
-                float sampleTime = Mathf.Repeat(t * ctrl.PlaybackSpeed + ctrl.PhaseSeconds, clip.length);
-                float normalizedTime = sampleTime / clip.length;
+                GameObject obj = GameObject.Find(obsName);
+                if (obj == null)
+                {
+                    sb.AppendLine($"[ObstacleDiagnosticTest] '{obsName}' not found in scene.");
+                    continue;
+                }
 
-                // Sample the clip
-                clip.SampleAnimation(root, sampleTime);
+                ObstacleAnimationController ctrl = obj.GetComponent<ObstacleAnimationController>();
+                if (ctrl == null || ctrl.Clip == null)
+                {
+                    sb.AppendLine($"[ObstacleDiagnosticTest] ObstacleAnimationController or Clip is null on {obsName}.");
+                    continue;
+                }
 
-                Vector3 rootRot = root.transform.localEulerAngles;
-                Vector3 childRot = visualChild.localEulerAngles;
+                AnimationClip clip = ctrl.Clip;
+                GameObject root = ctrl.AnimationRoot != null ? ctrl.AnimationRoot : obj;
 
-                sb.AppendLine(string.Format("{0,8:F1} | {1,12:F4} | {2,16:F3} | {3,-28} | {4,-28}",
-                    t, normalizedTime, sampleTime, 
-                    $"({rootRot.x:F1}, {rootRot.y:F1}, {rootRot.z:F1})", 
-                    $"({childRot.x:F1}, {childRot.y:F1}, {childRot.z:F1})"));
+                // Find key child / bone transforms to inspect
+                Transform visualChild = null;
+                Transform boneChild = null;
+                if (obsName == "ft_animated_obstacle_f10" || obsName == "ft_animated_obstacle_f10_1")
+                {
+                    visualChild = root.transform.Find("GM_3D_ObstacleF10");
+                    boneChild = root.transform.Find("Armature.001/Bone");
+                }
+                else if (obsName == "ft_animated_obstacle_f13")
+                {
+                    visualChild = root.transform.Find("GM_3D_ObstacleF13");
+                }
+                else if (obsName == "ft_animated_obstacle_f14")
+                {
+                    visualChild = root.transform.Find("GM_3D_ObstacleF14_P1");
+                }
+                else if (obsName == "ft_animated_obstacle_f23_1")
+                {
+                    visualChild = root.transform.Find("GM_3D_ObstacleF23");
+                }
+
+                sb.AppendLine();
+                sb.AppendLine($"--- OBSTACLE: {obsName} ---");
+                sb.AppendLine($"Animation Root: {root.name} ({AssetDatabase.GetAssetPath(clip)})");
+                sb.AppendLine($"Clip Name: {clip.name}, Length: {clip.length:F3}s, Speed: {ctrl.PlaybackSpeed}x, Phase: {ctrl.PhaseSeconds}s");
+                sb.AppendLine($"Key Child: {(visualChild != null ? visualChild.name : "none")}, Key Bone: {(boneChild != null ? boneChild.name : "none")}");
+                sb.AppendLine(string.Format("{0,-8} | {1,-10} | {2,-24} | {3,-24} | {4,-24}",
+                    "Time(s)", "NormTime", "Root Local Euler", "Child Local Euler", "Bone Local Euler"));
+                sb.AppendLine(new string('-', 100));
+
+                for (float t = 0.0f; t <= 3.05f; t += 0.1f)
+                {
+                    float sampleTime = Mathf.Repeat(t * ctrl.PlaybackSpeed + ctrl.PhaseSeconds, clip.length);
+                    float normalizedTime = sampleTime / clip.length;
+
+                    clip.SampleAnimation(root, sampleTime);
+
+                    Vector3 rootRot = root.transform.localEulerAngles;
+                    Vector3 childRot = visualChild != null ? visualChild.localEulerAngles : Vector3.zero;
+                    Vector3 boneRot = boneChild != null ? boneChild.localEulerAngles : Vector3.zero;
+
+                    sb.AppendLine(string.Format("{0,8:F1} | {1,10:F4} | {2,-24} | {3,-24} | {4,-24}",
+                        t, normalizedTime,
+                        $"({rootRot.x:F1}, {rootRot.y:F1}, {rootRot.z:F1})",
+                        visualChild != null ? $"({childRot.x:F1}, {childRot.y:F1}, {childRot.z:F1})" : "N/A",
+                        boneChild != null ? $"({boneRot.x:F1}, {boneRot.y:F1}, {boneRot.z:F1})" : "N/A"));
+                }
             }
 
             sb.AppendLine("================================================================================");
@@ -103,84 +127,11 @@ namespace FartTogether.Editor
             string logResult = sb.ToString();
             Debug.Log(logResult);
 
-            string outPath = "docs/gate-rotation-log.txt";
+            string outPath = "docs/obstacles-rotation-log.txt";
             File.WriteAllText(outPath, logResult);
-            Debug.Log($"[ObstacleDiagnosticTest] Wrote log to {outPath}");
+            Debug.Log($"[ObstacleDiagnosticTest] Wrote multi-obstacle log to {outPath}");
 
             return logResult;
-        }
-    }
-
-    /// <summary>
-    /// Runtime logger that automatically runs during Play mode and records the live Play mode rotation.
-    /// </summary>
-    public class ObstacleRuntimeLogger : MonoBehaviour
-    {
-        private ObstacleAnimationController _ctrl;
-        private AnimationClip _clip;
-        private GameObject _root;
-        private Transform _child;
-        private float _startTime;
-        private float _nextSampleTime;
-        private List<string> _logLines = new List<string>();
-        private bool _done = false;
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void AutoAttach()
-        {
-            GameObject gate = GameObject.Find("ft_animated_obstacle_f3");
-            if (gate != null && gate.GetComponent<ObstacleRuntimeLogger>() == null)
-            {
-                gate.AddComponent<ObstacleRuntimeLogger>();
-            }
-        }
-
-        private void Start()
-        {
-            _ctrl = GetComponent<ObstacleAnimationController>();
-            if (_ctrl != null)
-            {
-                _clip = _ctrl.Clip;
-                _root = _ctrl.AnimationRoot != null ? _ctrl.AnimationRoot : gameObject;
-                _child = _root.transform.Find("GM_3D_ObstacleF3") ?? _root.transform;
-            }
-
-            _startTime = Time.time;
-            _nextSampleTime = _startTime;
-            _logLines.Add("================================================================================");
-            _logLines.Add("LIVE PLAY MODE LOG: ft_animated_obstacle_f3");
-            string clipName = _clip != null ? _clip.name : "null";
-            string clipLength = _clip != null ? _clip.length.ToString("F3") : "null";
-            string speed = _ctrl != null ? _ctrl.PlaybackSpeed.ToString() : "null";
-            _logLines.Add(string.Format("Clip: {0}, Length: {1}s, Speed: {2}", clipName, clipLength, speed));
-            _logLines.Add("Time(s)  | NormTime | Root Local Euler             | Child Local Euler");
-            _logLines.Add("--------------------------------------------------------------------------------");
-        }
-
-        private void Update()
-        {
-            if (_done || _clip == null) return;
-
-            float elapsed = Time.time - _startTime;
-            if (elapsed > 3.1f)
-            {
-                _done = true;
-                _logLines.Add("================================================================================");
-                string text = string.Join("\n", _logLines);
-                Debug.Log($"[ObstacleRuntimeLogger] Live test completed:\n{text}");
-                File.WriteAllText("docs/gate-live-playmode-log.txt", text);
-                return;
-            }
-
-            if (Time.time >= _nextSampleTime)
-            {
-                float normTime = Mathf.Repeat(elapsed * _ctrl.PlaybackSpeed, _clip.length) / _clip.length;
-                Vector3 rRot = _root.transform.localEulerAngles;
-                Vector3 cRot = _child.localEulerAngles;
-                _logLines.Add(string.Format("{0,7:F1}s | {1,8:F4} | ({2,5:F1},{3,5:F1},{4,5:F1}) | ({5,5:F1},{6,5:F1},{7,5:F1})",
-                    elapsed, normTime, rRot.x, rRot.y, rRot.z, cRot.x, cRot.y, cRot.z));
-                _nextSampleTime += 0.1f;
-            }
         }
     }
 }

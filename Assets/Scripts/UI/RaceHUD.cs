@@ -22,6 +22,9 @@ namespace FartTogether.GameUI
         [SerializeField] private TextMeshProUGUI _timerText = null;
         [SerializeField] private TextMeshProUGUI _finishBannerText = null;
         [SerializeField] private TextMeshProUGUI _debugText = null;
+        [SerializeField] private TextMeshProUGUI _resetFacingHintText = null;
+
+        private RaftReorient _raftReorient = null;
 
         [Header("Gas Fuel Displays")]
         [Tooltip("Optional Image bars set to Filled mode, or sliders for seats 1-4.")]
@@ -73,6 +76,8 @@ namespace FartTogether.GameUI
             {
                 _finishBannerText.gameObject.SetActive(false);
             }
+
+            _raftReorient = FindAnyObjectByType<RaftReorient>();
         }
 
         private void Update()
@@ -81,6 +86,28 @@ namespace FartTogether.GameUI
             UpdateTimerDisplay();
             UpdateGasDisplays();
             UpdateDebugDisplay();
+            UpdateResetFacingHintDisplay();
+        }
+
+        private void UpdateResetFacingHintDisplay()
+        {
+            if (_resetFacingHintText == null) return;
+
+            if (_raftReorient == null)
+            {
+                _raftReorient = FindAnyObjectByType<RaftReorient>();
+            }
+
+            if (_raftReorient != null && !_raftReorient.CanReorient)
+            {
+                _resetFacingHintText.text = $"R: Reset facing ({_raftReorient.CooldownRemaining:F1}s)";
+                _resetFacingHintText.color = new Color(0.75f, 0.75f, 0.75f, 0.45f);
+            }
+            else
+            {
+                _resetFacingHintText.text = "R: Reset facing";
+                _resetFacingHintText.color = new Color(1.0f, 1.0f, 1.0f, 0.75f);
+            }
         }
 
         private void UpdateSpeedDisplay()

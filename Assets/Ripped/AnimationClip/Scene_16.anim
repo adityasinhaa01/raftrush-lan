@@ -81,7 +81,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: path_0xC4F5D5C_hOLUtmH
+    path: GM_3D_ObstacleC2
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -151,7 +151,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: path_0xFD7FBB72_WQWlVIN
+    path: GM_3D_ObstacleC2_Col
   m_CompressedRotationCurves: []
   m_EulerCurves: []
   m_PositionCurves: []
@@ -278,7 +278,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.x
-    path: path_0xC4F5D5C_hOLUtmH
+    path: GM_3D_ObstacleC2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -353,7 +353,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.y
-    path: path_0xC4F5D5C_hOLUtmH
+    path: GM_3D_ObstacleC2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -428,7 +428,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.z
-    path: path_0xC4F5D5C_hOLUtmH
+    path: GM_3D_ObstacleC2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -503,7 +503,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.w
-    path: path_0xC4F5D5C_hOLUtmH
+    path: GM_3D_ObstacleC2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -578,7 +578,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.x
-    path: path_0xFD7FBB72_WQWlVIN
+    path: GM_3D_ObstacleC2_Col
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -653,7 +653,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.y
-    path: path_0xFD7FBB72_WQWlVIN
+    path: GM_3D_ObstacleC2_Col
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -728,7 +728,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.z
-    path: path_0xFD7FBB72_WQWlVIN
+    path: GM_3D_ObstacleC2_Col
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -803,7 +803,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalRotation.w
-    path: path_0xFD7FBB72_WQWlVIN
+    path: GM_3D_ObstacleC2_Col
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -879,7 +879,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAngles.z
-    path: path_0xC4F5D5C_hOLUtmH
+    path: GM_3D_ObstacleC2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -954,7 +954,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAngles.y
-    path: path_0xC4F5D5C_hOLUtmH
+    path: GM_3D_ObstacleC2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1029,7 +1029,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAngles.x
-    path: path_0xC4F5D5C_hOLUtmH
+    path: GM_3D_ObstacleC2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1104,7 +1104,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAngles.x
-    path: path_0xFD7FBB72_WQWlVIN
+    path: GM_3D_ObstacleC2_Col
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1179,7 +1179,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAngles.y
-    path: path_0xFD7FBB72_WQWlVIN
+    path: GM_3D_ObstacleC2_Col
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1254,7 +1254,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAngles.z
-    path: path_0xFD7FBB72_WQWlVIN
+    path: GM_3D_ObstacleC2_Col
     classID: 4
     script: {fileID: 0}
     flags: 0

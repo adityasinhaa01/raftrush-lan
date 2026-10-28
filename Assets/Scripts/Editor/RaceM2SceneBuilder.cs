@@ -67,6 +67,63 @@ namespace FartTogether.Editor
             BuildMilestone2Scene(openAndSave: true);
         }
 
+        public static void BuildMilestone2SceneFromMenu()
+        {
+            BuildMilestone2Scene(openAndSave: true);
+        }
+
+        [MenuItem("FartTogether/Attach Raft Reorient Components to Active Scene", priority = 4)]
+        public static void AttachRaftReorientMenu()
+        {
+            var raft = UnityEngine.Object.FindAnyObjectByType<RaftController>();
+            if (raft == null)
+            {
+                Debug.LogError("[RaftReorient Setup] No RaftController found in active scene!");
+                return;
+            }
+
+            GameObject raftObj = raft.gameObject;
+            if (raftObj.GetComponent<KeyboardRaftReorientInput>() == null)
+            {
+                raftObj.AddComponent<KeyboardRaftReorientInput>();
+                Debug.Log("[RaftReorient Setup] Added KeyboardRaftReorientInput to Raft.");
+            }
+
+            if (raftObj.GetComponent<RaftReorient>() == null)
+            {
+                raftObj.AddComponent<RaftReorient>();
+                Debug.Log("[RaftReorient Setup] Added RaftReorient to Raft.");
+            }
+
+            var hud = UnityEngine.Object.FindAnyObjectByType<RaceHUD>();
+            if (hud != null)
+            {
+                SerializedObject so = new SerializedObject(hud);
+                SerializedProperty hintProp = so.FindProperty("_resetFacingHintText");
+                if (hintProp != null && hintProp.objectReferenceValue == null)
+                {
+                    Transform canvasTransform = hud.transform;
+                    TMP_FontAsset font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/LilitaOne-Regular.ttf");
+                    TextMeshProUGUI resetFacingHint = CreateText(canvasTransform, "ResetFacingHint", "R: Reset facing", font, 16, TextAlignmentOptions.BottomRight);
+                    RectTransform resetHintRect = resetFacingHint.rectTransform;
+                    resetHintRect.anchorMin = new Vector2(1f, 0f);
+                    resetHintRect.anchorMax = new Vector2(1f, 0f);
+                    resetHintRect.pivot = new Vector2(1f, 0f);
+                    resetHintRect.anchoredPosition = new Vector2(-25f, 25f);
+                    resetHintRect.sizeDelta = new Vector2(240f, 40f);
+                    resetFacingHint.color = new Color(1.0f, 1.0f, 1.0f, 0.75f);
+
+                    hintProp.objectReferenceValue = resetFacingHint;
+                    so.ApplyModifiedProperties();
+                    Debug.Log("[RaftReorient Setup] Added ResetFacingHint to RaceHUD canvas.");
+                }
+            }
+
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(raftObj.scene);
+            UnityEditor.SceneManagement.EditorSceneManager.SaveScene(raftObj.scene);
+            Debug.Log("<color=green>[RaftReorient Setup] Successfully attached RaftReorient and saved scene!</color>");
+        }
+
         [MenuItem("FartTogether/Fix Animation Clips Legacy Flag (Option B)", priority = 10)]
         public static void FixAnimationClipsLegacyMenu()
         {
@@ -103,8 +160,13 @@ namespace FartTogether.Editor
         {
             EditorApplication.delayCall += () =>
             {
-                if (!File.Exists(ScenePath))
+                string triggerFile = "scratch/trigger_scene_build.txt";
+                if (!File.Exists(ScenePath) || File.Exists(triggerFile))
                 {
+                    if (File.Exists(triggerFile))
+                    {
+                        try { File.Delete(triggerFile); } catch { }
+                    }
                     BuildMilestone2Scene(openAndSave: true);
                 }
             };
@@ -126,8 +188,11 @@ namespace FartTogether.Editor
             // 3. Instantiate Authentic Track (Level_Platform)
             GameObject trackObj = SetupTrack();
 
-            // 4. Configure Water Flow Zones (Gust_Canyon_1, 2, 3, 7, etc.)
+            // 4. Configure Water Flow Zones (Gust_Canyon_1, 2, 3, 7)
             SetupWaterFlowZones(trackObj);
+
+            // 4.2. Configure Authentic Track Checkpoints & VoidKill plane
+            SetupCheckpointsAndVoidKill(trackObj);
 
             // 4.5. Configure Authentic Moving Obstacles, Floating Water Obstacles & Spikes
             SetupObstacles(trackObj);
@@ -233,11 +298,10 @@ namespace FartTogether.Editor
                     mc.convex = false;
 
                     // SurfaceProbe is the authentic curved water mesh collider used by WaterChannel for raycast ride height.
-                    // Keep it as a trigger on Layer 4 (Water) so the physical raft hull glides across without bumping,
-                    // while RaftBuoyancy raycasts against it for authentic suspension & bobbing.
+                    // Keep isTrigger = false matching original Level_Platform.prefab YAML line 18691 (m_IsTrigger: 0).
                     if (objName.Equals("~SurfaceProbe", StringComparison.OrdinalIgnoreCase))
                     {
-                        mc.isTrigger = true;
+                        mc.isTrigger = false;
                         mf.gameObject.layer = 4; // Water layer
                     }
                     else
@@ -301,7 +365,25 @@ namespace FartTogether.Editor
                 }
                 mr.sharedMaterials = newMats;
             }
-            Debug.Log($"[RaceM2SceneBuilder] Mapped {materialsUpdated} material instances to URP/Lit with original textures.");
+            Debug.Log($"[RaceM2SceneBuilder] Mapped {materialsUpdated} material instances on MeshRenderers to URP/Lit with original textures.");
+
+            // Step B.2: Replace missing/broken shaders on SkinnedMeshRenderers with clean URP/Lit materials
+            // and configure bounds / updateWhenOffscreen to guarantee no frustum culling during swings/animations.
+            SkinnedMeshRenderer[] allSkinnedRenderers = trackObj.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            int smrUpdated = 0;
+            foreach (SkinnedMeshRenderer smr in allSkinnedRenderers)
+            {
+                Material[] existingMats = smr.sharedMaterials;
+                Material[] newMats = new Material[existingMats != null && existingMats.Length > 0 ? existingMats.Length : 1];
+                for (int m = 0; m < newMats.Length; m++)
+                {
+                    newMats[m] = mainPaletMat;
+                }
+                smr.sharedMaterials = newMats;
+                smr.updateWhenOffscreen = true; // Guarantees bone swings are never culled by stale AABB bounds
+                smrUpdated++;
+            }
+            Debug.Log($"[RaceM2SceneBuilder] Configured {smrUpdated} SkinnedMeshRenderers with URP/Lit MainPalet and updateWhenOffscreen=true.");
 
             return trackObj;
         }
@@ -314,8 +396,19 @@ namespace FartTogether.Editor
             // and PuffTest.unity scene parameters:
             // Gust_Canyon_1: Pos=(-11.03, 1.1, -10.66), Rot=(0, 180, 0), Size=(15, 4, 11), Force=200N (Along/Forward)
             // Gust_Canyon_2: Pos=(18.57, 1.1, 4.34), Rot=(0, 0, 0), Size=(15, 4, 11), Force=100N (Against/Reverse)
-            // Gust_Canyon_3: Pos=(48.8, 10, -65.8), Rot=(0, 90, 0), Size=(49.6, 4, 11), Force=100N (Turn)
-            // Gust_Canyon_7: Pos=(105.1, 9.9, -91.5), Size=(23.3, 4, 11), Force=60N (Upper Current)
+            // Authentic WaterFlowZones from Level_Platform YAML (guid: 9068501a379443482d9bc9c859e10c70, GustZone):
+            // - Gust_Canyon_1: Pos=(-11.03, 1.10, -10.66), Rot=(0, 180, 0), Size=(15, 4, 11), _localDir=(1,0,0), _force=200N
+            //   In world space: (1,0,0) rotated 180° around Y is (-1,0,0) [WEST]. Raft moves from CP1 (-30) to CP2 (+42) [EAST].
+            //   -> True against-flow counter-current opposing the raft!
+            // - Gust_Canyon_2: Pos=(18.57, 1.10, 4.34), Rot=(0, 0, 0), Size=(15, 4, 11), _localDir=(1,0,0), _force=100N
+            //   In world space: (1,0,0) rotated 0° is (+1,0,0) [EAST]. Raft moves [EAST].
+            //   -> Downstream rapid boosting the raft forward!
+            // - Gust_Canyon_3: Pos=(48.85, 10.00, -65.84), Rot=(0, 90, 0), Size=(49.6, 4, 11), _localDir=(1,0,0), _force=100N
+            //   In world space: (1,0,0) rotated 90° is (0,0,-1) [SOUTH]. Raft moves downhill from CP2 (+20) to CP3 (-105) [SOUTH].
+            //   -> Downstream current along the slope and bend!
+            // - Gust_Canyon_7: Pos=(105.13, 9.93, -91.49), Rot=(0, 0, 0), Size=(23.3, 4, 11), _localDir=(1,0,0), _force=60N
+            //   In world space: (1,0,0) is (+1,0,0) [EAST]. Raft moves from CP3 (49) to CP4 (122) [EAST].
+            //   -> Downstream channel current!
 
             Transform[] allChildren = trackObj.GetComponentsInChildren<Transform>(true);
             int flowZonesConfigured = 0;
@@ -324,10 +417,7 @@ namespace FartTogether.Editor
             {
                 string name = t.name;
 
-                if (name.StartsWith("Gust_Canyon_", StringComparison.OrdinalIgnoreCase) ||
-                    name.Equals("Gust", StringComparison.OrdinalIgnoreCase) ||
-                    name.Equals("Gust2", StringComparison.OrdinalIgnoreCase) ||
-                    name.Equals("Gust3", StringComparison.OrdinalIgnoreCase))
+                if (name.StartsWith("Gust_Canyon_", StringComparison.OrdinalIgnoreCase))
                 {
                     BoxCollider bc = t.GetComponent<BoxCollider>();
                     if (bc == null)
@@ -343,58 +433,112 @@ namespace FartTogether.Editor
                         flowZone = t.gameObject.AddComponent<WaterFlowZone>();
                     }
 
+                    // All original GustZone instances use _localDir = (1, 0, 0)
+                    flowZone.LocalDirection = Vector3.right;
+
                     if (name.Equals("Gust_Canyon_1", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Forward thrust along water canyon channel
-                        flowZone.LocalDirection = Vector3.right;
-                        flowZone.FlowForce = 200f; // Original: 200N
+                        // Quoted from Level_Platform.prefab line 70528: _force = 200
+                        flowZone.FlowForce = 200f;
                     }
                     else if (name.Equals("Gust_Canyon_2", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Counter thrust against the raft motion
-                        flowZone.LocalDirection = Vector3.right;
-                        flowZone.FlowForce = 100f; // Original: 100N
+                        // Quoted from Level_Platform.prefab line 70793: _force = 100
+                        flowZone.FlowForce = 100f;
                     }
                     else if (name.Equals("Gust_Canyon_3", StringComparison.OrdinalIgnoreCase))
                     {
-                        flowZone.LocalDirection = Vector3.right;
-                        flowZone.FlowForce = 100f; // Original: 100N
+                        // Quoted from Level_Platform.prefab line 71058: _force = 100
+                        flowZone.FlowForce = 100f;
                     }
                     else if (name.Equals("Gust_Canyon_7", StringComparison.OrdinalIgnoreCase))
                     {
-                        flowZone.LocalDirection = Vector3.right;
-                        flowZone.FlowForce = 60f; // Original: 60N
-                    }
-                    else
-                    {
-                        flowZone.LocalDirection = Vector3.right;
-                        flowZone.FlowForce = 100f;
+                        // Quoted from Level_Platform.prefab line 71323: _force = 60
+                        flowZone.FlowForce = 60f;
                     }
 
                     flowZonesConfigured++;
                 }
-                else if (name.Equals("FT_DemoWaterChannel", StringComparison.OrdinalIgnoreCase))
-                {
-                    // Ensure the main water channel volume has a gentle forward drift
-                    Transform volumeTr = t.Find("Volume");
-                    if (volumeTr != null)
-                    {
-                        BoxCollider bc = volumeTr.GetComponent<BoxCollider>();
-                        if (bc != null) bc.isTrigger = true;
-
-                        WaterFlowZone baseWaterFlow = volumeTr.GetComponent<WaterFlowZone>();
-                        if (baseWaterFlow == null)
-                        {
-                            baseWaterFlow = volumeTr.gameObject.AddComponent<WaterFlowZone>();
-                        }
-                        baseWaterFlow.LocalDirection = Vector3.forward;
-                        baseWaterFlow.FlowForce = 40f; // Gentle baseline water current
-                        flowZonesConfigured++;
-                    }
-                }
             }
 
-            Debug.Log($"[RaceM2SceneBuilder] Configured {flowZonesConfigured} WaterFlowZones in track water channels.");
+            Debug.Log($"[RaceM2SceneBuilder] Configured {flowZonesConfigured} authentic WaterFlowZones in track water channels.");
+        }
+
+        private static void SetupCheckpointsAndVoidKill(GameObject trackObj)
+        {
+            if (trackObj == null) return;
+
+            // 1. Wire the 8 authentic sequential Checkpoints under Level_Platform/Checkpoints
+            // Derived from Level_Platform.prefab CheckpointId tags:
+            // Checkpoint_Start (ID 0) -> Checkpoint_Start (1) (ID 1) -> Checkpoint_Start (1)_1 (ID 2) ->
+            // Checkpoint_Start (2) (ID 3) -> Checkpoint_Start (3) (ID 4) -> Checkpoint_Start (5) (ID 5) ->
+            // Checkpoint_Start (5)_1 (ID 6) -> Checkpoint_Start (5)_2 (ID 7)
+            Transform cpRoot = trackObj.transform.Find("Checkpoints");
+            if (cpRoot != null)
+            {
+                var cpMapping = new (string name, int index)[]
+                {
+                    ("Checkpoint_Start", 0),
+                    ("Checkpoint_Start (1)", 1),
+                    ("Checkpoint_Start (1)_1", 2),
+                    ("Checkpoint_Start (2)", 3),
+                    ("Checkpoint_Start (3)", 4),
+                    ("Checkpoint_Start (5)", 5),
+                    ("Checkpoint_Start (5)_1", 6),
+                    ("Checkpoint_Start (5)_2", 7)
+                };
+
+                foreach (var (cpName, cpIndex) in cpMapping)
+                {
+                    Transform cpTr = cpRoot.Find(cpName);
+                    if (cpTr != null)
+                    {
+                        BoxCollider bc = cpTr.GetComponent<BoxCollider>();
+                        if (bc != null)
+                        {
+                            bc.isTrigger = true;
+                            bc.size = new Vector3(Mathf.Abs(bc.size.x), Mathf.Abs(bc.size.y), Mathf.Abs(bc.size.z));
+                        }
+
+                        RaceCheckpoint cp = cpTr.GetComponent<RaceCheckpoint>();
+                        if (cp == null) cp = cpTr.gameObject.AddComponent<RaceCheckpoint>();
+                        cp.CheckpointIndex = cpIndex;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[RaceM2SceneBuilder] Checkpoint '{cpName}' not found under Checkpoints root.");
+                    }
+                }
+                Debug.Log("[RaceM2SceneBuilder] Successfully wired all 8 sequential RaceCheckpoints.");
+            }
+
+            // Attach RaceTrack component and auto-discover checkpoints for authentic respawn projection
+            RaceTrack raceTrack = trackObj.GetComponent<RaceTrack>();
+            if (raceTrack == null) raceTrack = trackObj.AddComponent<RaceTrack>();
+            raceTrack.AutoDiscoverTrackObjects();
+
+            // 2. Build VoidKill trigger plane matching _reference/PuffPirates/Track/LevelBuilder.cs line 1183
+            Transform existingVoid = trackObj.transform.Find("VoidKill");
+            if (existingVoid != null)
+            {
+                UnityEngine.Object.DestroyImmediate(existingVoid.gameObject);
+            }
+
+            GameObject voidKill = new GameObject("VoidKill");
+            voidKill.transform.SetParent(trackObj.transform, false);
+
+            // Quoted from _reference/PuffPirates/Track/LevelBuilder.cs line 1187:
+            // obj.transform.position = new Vector3(0f, -1025f, 0f);
+            voidKill.transform.position = new Vector3(0f, -1025f, 0f);
+
+            // Quoted from _reference/PuffPirates/Track/LevelBuilder.cs lines 1188-1190:
+            // boxCollider.size = new Vector3(100000f, 2000f, 100000f);
+            BoxCollider voidBox = voidKill.AddComponent<BoxCollider>();
+            voidBox.isTrigger = true;
+            voidBox.size = new Vector3(100000f, 2000f, 100000f);
+
+            voidKill.AddComponent<VoidKillZone>();
+            Debug.Log("[RaceM2SceneBuilder] Successfully built VoidKill trigger plane at y = -1025 (top surface at y = -25f).");
         }
 
         private static void SetupObstacles(GameObject trackObj)
@@ -484,14 +628,45 @@ namespace FartTogether.Editor
                         animCtrl.Configure(clip, rootGo, def.speed, def.phase);
                         animObstaclesConfigured++;
 
-                        // Ensure all child colliders under this animated obstacle are active & solid
+                        // Ensure all child colliders under this animated obstacle are active, solid,
+                        // and have kinematic Rigidbodies driven in 100% sync with their visible mesh via ObstacleColliderSync
                         Collider[] cols = tr.GetComponentsInChildren<Collider>(true);
                         foreach (Collider c in cols)
                         {
                             c.enabled = true;
+                            if (c is MeshCollider mc)
+                            {
+                                mc.convex = true;
+                            }
+
+                            Transform matchingMesh = FindMatchingMesh(tr, c.transform);
+                            if (matchingMesh != null)
+                            {
+                                ObstacleColliderSync sync = c.GetComponent<ObstacleColliderSync>();
+                                if (sync == null) sync = c.gameObject.AddComponent<ObstacleColliderSync>();
+                                sync.Configure(matchingMesh);
+                            }
+                            else
+                            {
+                                if (!c.TryGetComponent<Rigidbody>(out var rb))
+                                {
+                                    rb = c.gameObject.AddComponent<Rigidbody>();
+                                }
+                                rb.isKinematic = true;
+                                rb.useGravity = false;
+                                rb.interpolation = RigidbodyInterpolation.Interpolate;
+                            }
                         }
                     }
                 }
+            }
+
+            // Ensure FT_HammerGate is removed (per user clarification, FT_HammerGate belongs only to Level_Parkur;
+            // the hammer in Gust_Canyon_1 is authentic ft_animated_obstacle_f10 under GM_3D_ArchV1).
+            Transform existingHg = trackObj.transform.Find("FT_HammerGate");
+            if (existingHg != null)
+            {
+                UnityEngine.Object.DestroyImmediate(existingHg.gameObject);
             }
 
             // 2. Configure Floating Water Obstacles (FakeWaveBob instances) & Spikes & Hazards
@@ -522,16 +697,109 @@ namespace FartTogether.Editor
                 else if (tr.name.Equals("~KillTrigger", StringComparison.OrdinalIgnoreCase) ||
                          tr.name.IndexOf("Thorn", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    HazardBarrier barrier = tr.GetComponent<HazardBarrier>();
-                    if (barrier == null) barrier = tr.gameObject.AddComponent<HazardBarrier>();
+                    // Replace legacy HazardBarrier with authentic BarrierKill
+                    if (tr.TryGetComponent<HazardBarrier>(out var oldHb))
+                    {
+                        UnityEngine.Object.DestroyImmediate(oldHb);
+                    }
 
-                    barrier.InvulnSeconds = 2.0f;
-                    barrier.RespawnAtStart = false;
+                    BarrierKill barrier = tr.GetComponent<BarrierKill>();
+                    if (barrier == null) barrier = tr.gameObject.AddComponent<BarrierKill>();
+
+                    barrier.Configure(respawnAtStart: false, invulnSeconds: 2.0f, cause: DeathCause.Obstacle);
                     hazardBarriersConfigured++;
                 }
             }
 
             Debug.Log($"[RaceM2SceneBuilder] Configured Obstacles: {animObstaclesConfigured} Animated Mechanical Obstacles, {bobObstaclesConfigured} Floating Water Obstacles, {bounceSpikesConfigured} Bouncing Spikes, {hazardBarriersConfigured} Hazard Barriers.");
+        }
+
+        public static Transform FindMatchingMesh(Transform obstacleRoot, Transform colTr)
+        {
+            string obsName = obstacleRoot.name;
+            string colPath = colTr.name;
+            Transform parent = colTr.parent;
+            while (parent != null && parent != obstacleRoot.parent)
+            {
+                colPath = parent.name + "/" + colPath;
+                parent = parent.parent;
+            }
+
+            // Two-part animated gates:
+            if (obsName.Equals("ft_animated_obstacle_f3", StringComparison.OrdinalIgnoreCase))
+            {
+                if (colPath.IndexOf("P2", StringComparison.OrdinalIgnoreCase) >= 0)
+                    return obstacleRoot.Find("visual/GM_3D_ObstacleF3_P2");
+                return obstacleRoot.Find("visual/GM_3D_ObstacleF3");
+            }
+            if (obsName.Equals("ft_animated_obstacle_f14", StringComparison.OrdinalIgnoreCase))
+            {
+                if (colPath.IndexOf("P2", StringComparison.OrdinalIgnoreCase) >= 0)
+                    return obstacleRoot.Find("GM_3D_ObstacleF14/GM_3D_ObstacleF14_P2");
+                return obstacleRoot.Find("GM_3D_ObstacleF14/GM_3D_ObstacleF14_P1");
+            }
+            if (obsName.Equals("ft_animated_obstacle_f23_1", StringComparison.OrdinalIgnoreCase))
+            {
+                if (colPath.IndexOf("P2", StringComparison.OrdinalIgnoreCase) >= 0)
+                    return obstacleRoot.Find("GM_3D_ObstacleF23/GM_3D_ObstacleF23_P2");
+                return obstacleRoot.Find("GM_3D_ObstacleF23/GM_3D_ObstacleF23");
+            }
+            if (obsName.StartsWith("ft_animated_obstacle_f10", StringComparison.OrdinalIgnoreCase))
+            {
+                return obstacleRoot.Find("GM_3D_ObstacleF10/Armature.001/Bone/Bone.001");
+            }
+            if (obsName.Equals("ft_animated_obstacle_f13", StringComparison.OrdinalIgnoreCase))
+            {
+                return obstacleRoot.Find("GM_3D_ObstacleF13/GM_3D_ObstacleF13");
+            }
+
+            // For all standard mechanical obstacles (Visual/GM_3D_Obstacle*):
+            // Find the primary non-col MeshRenderer
+            MeshRenderer[] rends = obstacleRoot.GetComponentsInChildren<MeshRenderer>(true);
+            foreach (var r in rends)
+            {
+                string rName = r.name;
+                if (!rName.EndsWith("_Col", StringComparison.OrdinalIgnoreCase) &&
+                    !rName.EndsWith(".Col", StringComparison.OrdinalIgnoreCase) &&
+                    rName.IndexOf("KillTrigger", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    rName.IndexOf("collider", StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    return r.transform;
+                }
+            }
+
+            return rends.Length > 0 ? rends[0].transform : null;
+        }
+
+        [MenuItem("FartTogether/Apply Obstacle Collider Sync Fix", priority = 3)]
+        public static void ApplyObstacleColliderSyncFixMenu()
+        {
+            GameObject trackObj = GameObject.Find("Level_Platform");
+            if (trackObj == null)
+            {
+                Debug.LogError("[RaceM2SceneBuilder] Level_Platform not found in active scene.");
+                return;
+            }
+
+            SetupObstacles(trackObj);
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(trackObj.scene);
+            UnityEditor.SceneManagement.EditorSceneManager.SaveScene(trackObj.scene);
+            Debug.Log("[RaceM2SceneBuilder] Successfully applied ObstacleColliderSync fix to all obstacles and saved scene.");
+        }
+
+        private static void GroundObstacle(GameObject go, float roadWorldY)
+        {
+            Renderer[] renderers = go.GetComponentsInChildren<Renderer>();
+            if (renderers.Length != 0)
+            {
+                Bounds bounds = renderers[0].bounds;
+                for (int i = 1; i < renderers.Length; i++)
+                {
+                    bounds.Encapsulate(renderers[i].bounds);
+                }
+                float deltaY = roadWorldY - 0.1f - bounds.min.y;
+                go.transform.position += Vector3.up * deltaY;
+            }
         }
 
         private static GameObject SetupRaft(out RaftController raft, out GasInput gasInput)
@@ -548,6 +816,9 @@ namespace FartTogether.Editor
             rb.centerOfMass = new Vector3(0f, -0.7f, 0f); // BoatPhysicsConfig._centerOfMassY = -0.7f (bottom heavy keel)
             rb.interpolation = RigidbodyInterpolation.Interpolate;
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+            rb.sleepThreshold = 0f;      // Disable sleeping so water/triggers/forces keep applying while stuck
+            rb.solverIterations = 16;    // Increased solver iterations against wall penetration
+            rb.solverVelocityIterations = 8;
 
             // Visual Model (child with Euler 90, 0, 0 so the round raft lies completely flat on the water)
             // Quoted from Boat.prefab: Model pos=(0, -0.87, 0), rot=(90, 0, 0)
@@ -582,8 +853,15 @@ namespace FartTogether.Editor
             // RaftController
             raft = raftObj.AddComponent<RaftController>();
 
+            // RaftRespawn (authentic fall-off & checkpoint respawn handling)
+            raftObj.AddComponent<RaftRespawn>();
+
             // GasInput
             gasInput = raftObj.AddComponent<GasInput>();
+
+            // RaftReorient & KeyboardRaftReorientInput (in-place facing reset with R)
+            raftObj.AddComponent<KeyboardRaftReorientInput>();
+            raftObj.AddComponent<RaftReorient>();
 
             // RaftBuoyancy (authentic spring-damper ride and gentle wave bobbing)
             RaftBuoyancy buoyancy = raftObj.AddComponent<RaftBuoyancy>();
@@ -639,6 +917,11 @@ namespace FartTogether.Editor
             bc.size = FinishZoneSize;
 
             finishObj.AddComponent<FinishZone>();
+
+            if (RaceTrack.Instance != null)
+            {
+                RaceTrack.Instance.RegisterFinish(finishObj.transform);
+            }
 
             // Add visible semi-transparent green cube so finish line is clearly distinguishable
             GameObject visualCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -769,6 +1052,16 @@ namespace FartTogether.Editor
             finishBanner.color = new Color(1.0f, 0.85f, 0.1f);
             finishBanner.gameObject.SetActive(false);
 
+            // Reset Facing Hint (Bottom-Right)
+            TextMeshProUGUI resetFacingHint = CreateText(canvasObj.transform, "ResetFacingHint", "R: Reset facing", font, 16, TextAlignmentOptions.BottomRight);
+            RectTransform resetHintRect = resetFacingHint.rectTransform;
+            resetHintRect.anchorMin = new Vector2(1f, 0f);
+            resetHintRect.anchorMax = new Vector2(1f, 0f);
+            resetHintRect.pivot = new Vector2(1f, 0f);
+            resetHintRect.anchoredPosition = new Vector2(-25f, 25f);
+            resetHintRect.sizeDelta = new Vector2(240f, 40f);
+            resetFacingHint.color = new Color(1.0f, 1.0f, 1.0f, 0.75f);
+
             // Race HUD Component
             RaceHUD hud = canvasObj.AddComponent<RaceHUD>();
             SerializedObject so = new SerializedObject(hud);
@@ -778,6 +1071,7 @@ namespace FartTogether.Editor
             so.FindProperty("_timerText").objectReferenceValue = timerText;
             so.FindProperty("_debugText").objectReferenceValue = debugText;
             so.FindProperty("_finishBannerText").objectReferenceValue = finishBanner;
+            so.FindProperty("_resetFacingHintText").objectReferenceValue = resetFacingHint;
 
             SerializedProperty gasTextsProp = so.FindProperty("_gasFuelTexts");
             for (int i = 0; i < 4; i++)

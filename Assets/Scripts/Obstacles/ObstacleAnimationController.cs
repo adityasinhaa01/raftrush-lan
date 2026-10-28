@@ -67,13 +67,30 @@ namespace FartTogether.Obstacles
             DestroyGraph();
         }
 
+        private void FixedUpdate()
+        {
+            if (!Application.isPlaying || !_startActive || _clip == null || _clip.length <= 0.0001f) return;
+
+            EvaluateAtTime(Time.fixedTime);
+            Physics.SyncTransforms();
+        }
+
         private void Update()
         {
             if (!_startActive || _clip == null || _clip.length <= 0.0001f) return;
 
             float time = Application.isPlaying ? Time.time : (float)EditorApplicationTime();
-            float sampleTime = Mathf.Repeat(time * _playbackSpeed + _phaseSeconds, _clip.length);
+            EvaluateAtTime(time);
 
+            if (Application.isPlaying)
+            {
+                Physics.SyncTransforms();
+            }
+        }
+
+        private void EvaluateAtTime(float time)
+        {
+            float sampleTime = Mathf.Repeat(time * _playbackSpeed + _phaseSeconds, _clip.length);
             GameObject target = GetTarget();
 
             if (_isGraphValid && _graph.IsValid())

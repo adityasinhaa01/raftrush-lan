@@ -46,19 +46,7 @@ namespace FartTogether.Editor
             "Scene_17.anim"   // ft_animated_obstacle_f10
         };
 
-        [InitializeOnLoadMethod]
-        private static void InitOnLoad()
-        {
-            // Run automatically once on compile if not already run
-            EditorApplication.delayCall += () =>
-            {
-                if (!SessionState.GetBool("FartTogether_TangentsFixed_v1", false))
-                {
-                    SessionState.SetBool("FartTogether_TangentsFixed_v1", true);
-                    FixAllObstacleClipTangents();
-                }
-            };
-        }
+
 
         [MenuItem("FartTogether/Fix Clip Tangents", priority = 5)]
         public static void FixTangentsMenu()

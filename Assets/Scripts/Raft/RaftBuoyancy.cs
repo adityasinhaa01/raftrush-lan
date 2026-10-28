@@ -113,11 +113,28 @@ namespace FartTogether.Raft
             ApplyWaterRide();
         }
 
+        /// <summary>
+        /// Resets buoyancy state immediately following a respawn.
+        /// </summary>
+        public void ResetBuoyancy()
+        {
+            _isOverWater = true;
+            if (_rb != null)
+            {
+                _rb.linearVelocity = Vector3.zero;
+                _rb.angularVelocity = Vector3.zero;
+            }
+        }
+
         private void ApplyWaterRide()
         {
             float radius = Mathf.Clamp(_sampleRadius, 0.1f, 1.2f);
-            float probeAbove = _probeAboveHull;
-            float maxDistance = probeAbove + _rideHeight + 0.85f;
+
+            // Quoted from _reference/PuffPirates/Boats/BoatWaterRide.cs lines 70-71:
+            // float num2 = Mathf.Max(ProbeAboveHull, RideRayStartHeight); // RideRayStartHeight = 2.5f
+            // float maxDistance = num2 + Mathf.Max(0.05f, RideHeight) + 0.75f;
+            float probeAbove = Mathf.Max(_probeAboveHull, 2.5f);
+            float maxDistance = probeAbove + Mathf.Max(0.05f, _rideHeight) + 0.75f;
             int points = Mathf.Max(3, _pointCount);
 
             Vector3 linVel = _rb.linearVelocity;
@@ -193,21 +210,22 @@ namespace FartTogether.Raft
             }
 
             // 2. Fallback: Physics raycast against water surface mask if no specific collider hit
+            // Quoted from BoatPhysicsController.cs line 590 (IsSurfaceHit): static non-rigidbody upward surface
             if (!hitFound)
             {
-                int hitCount = Physics.RaycastNonAlloc(rayOrigin, Vector3.down, _rayHits, maxDistance, _waterSurfaceMask, QueryTriggerInteraction.Collide);
+                int hitCount = Physics.RaycastNonAlloc(rayOrigin, Vector3.down, _rayHits, maxDistance, _waterSurfaceMask, QueryTriggerInteraction.Ignore);
                 for (int i = 0; i < hitCount; i++)
                 {
                     RaycastHit h = _rayHits[i];
                     if (h.collider == null || h.rigidbody == _rb) continue;
                     if (h.collider.transform.IsChildOf(transform)) continue;
 
-                    // Only consider water objects (~SurfaceProbe, Water layer, or Water in name)
-                    bool isWater = h.collider.gameObject.layer == 4 ||
-                                   h.collider.name.IndexOf("Water", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                   h.collider.name.IndexOf("SurfaceProbe", StringComparison.OrdinalIgnoreCase) >= 0;
+                    bool isSurface = h.collider.gameObject.layer == 4 ||
+                                     h.collider.name.IndexOf("Water", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                     h.collider.name.IndexOf("SurfaceProbe", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                     h.collider.attachedRigidbody == null;
 
-                    if (isWater && Vector3.Dot(h.normal, Vector3.up) >= _minUpDot && h.distance < hitDistance)
+                    if (isSurface && Vector3.Dot(h.normal, Vector3.up) >= _minUpDot && h.distance < hitDistance)
                     {
                         hitFound = true;
                         hitDistance = h.distance;
